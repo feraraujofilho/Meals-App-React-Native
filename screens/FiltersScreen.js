@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { Platform, StyleSheet, Switch, Text, View } from "react-native"
 import { HeaderButtons, Item } from "react-navigation-header-buttons"
 import CustomHeaderButton from "../components/HeaderButton"
@@ -17,18 +17,36 @@ const FilterSwitch = (props) => {
 }
 
 const FiltersScreen = props => {
+    const { navigation } = props
+
     const [isGlutenFree, setIsGlutenFree] = useState(false)
     const [isLactoseFree, setIsLactoseFree] = useState(false)
-    const [isVegan, setIsVegan] = useState(false)
     const [isVegetarian, setIsVegetarian] = useState(false)
+    const [isVegan, setIsVegan] = useState(false)
+
+    // useCallback allow react to cache this function and only recreate it if its dependencies change
+    const saveFilters = useCallback(() => {
+        const appliedFilters = {
+            glutenFree: isGlutenFree,
+            lactoseFree: isLactoseFree,
+            vegetarian: isVegetarian,
+            vegan: isVegan,
+        }
+
+        console.log(appliedFilters)
+    }, [isGlutenFree, isLactoseFree, isVegan, isVegetarian])
+
+    useEffect(() => {
+        navigation.setParams({ save: saveFilters })
+    }, [saveFilters])
 
     return (
         <View style={styles.screen}>
             <Text style={styles.title}>Available Filters / Restrictions</Text>
             <FilterSwitch label="Gluten-free" state={isGlutenFree} onChange={(newValue) => setIsGlutenFree(newValue)} />
             <FilterSwitch label="Lactose-free" state={isLactoseFree} onChange={(newValue) => setIsLactoseFree(newValue)} />
-            <FilterSwitch label="Vegan" state={isVegan} onChange={(newValue) => setIsVegan(newValue)} />
             <FilterSwitch label="Vegetarian" state={isVegetarian} onChange={(newValue) => setIsVegetarian(newValue)} />
+            <FilterSwitch label="Vegan" state={isVegan} onChange={(newValue) => setIsVegan(newValue)} />
         </View>
     )
 }
@@ -36,9 +54,12 @@ const FiltersScreen = props => {
 FiltersScreen.navigationOptions = navData => {
     return {
         headerTitle: "Filters",
-        headerLeft: <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+        headerLeft: () => <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
             <Item title="Menu" iconName="ios-menu" onPress={() => { navData.navigation.toggleDrawer() }}></Item>
-        </HeaderButtons>
+        </HeaderButtons>,
+        headerRight: () => <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+            <Item title="Save" iconName="ios-save" onPress={() => { navData.navigation.getParam("save")() }}></Item>
+        </HeaderButtons>,
     }
 }
 
