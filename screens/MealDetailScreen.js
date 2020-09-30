@@ -6,7 +6,7 @@ import CustomHeaderButton from "../components/HeaderButton"
 import { MEALS } from "../data/dummy-data"
 
 const ListItem = props => {
-    return <DefaultText style={styles.listItem}>{props.children}</DefaultText>
+    return (<View style={styles.listItem}><DefaultText>{props.children}</DefaultText></View>)
 }
 
 const MealDetailScreen = props => {
