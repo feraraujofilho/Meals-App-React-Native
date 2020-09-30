@@ -1,21 +1,15 @@
 import React from "react"
-import { Button, StyleSheet, Text, View } from "react-native"
-import { CATEGORIES } from "../data/dummy-data"
+import MealItem from "../components/MealItem"
+import MealList from "../components/MealList"
+import { CATEGORIES, MEALS } from "../data/dummy-data"
 
 const CategorieMealScreen = props => {
     const catId = props.navigation.getParam("categoryId")
 
-    const selectedCategory = CATEGORIES.find(cat => cat.id === catId)
+    const displayedMeals = MEALS.filter(meal => meal.categoryIds.indexOf(catId) >= 0)
 
     return (
-        <View style={styles.screen}>
-            <Text>The Categorie Meal Screen</Text>
-            <Button title="Go To Details" onPress={() => {
-                props.navigation.navigate({ routeName: "MealDetail" })
-            }} />
-            <Text>{selectedCategory.title}</Text>
-            <Button title="Go Back" onPress={() => props.navigation.pop()} />
-        </View>
+        <MealList listData={displayedMeals} navigation={props.navigation} />
     )
 }
 
@@ -28,12 +22,6 @@ CategorieMealScreen.navigationOptions = (navigationData) => {
     }
 }
 
-const styles = StyleSheet.create({
-    screen: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center"
-    }
-})
+
 
 export default CategorieMealScreen
