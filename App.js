@@ -7,6 +7,8 @@ import { useScreens } from "react-native-screens"
 import { combineReducers, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import mealsReducer from './store/reducers/mealsReducer';
+// only for debugging purpose, remove on production
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 useScreens()
 
@@ -14,7 +16,7 @@ const rootReducer = combineReducers({
   meals: mealsReducer
 })
 
-const store = createStore(rootReducer)
+const store = createStore(rootReducer, /* only for debbug, remove on production */composeWithDevTools())
 
 const fetchFonts = () => {
   return Font.loadAsync({
